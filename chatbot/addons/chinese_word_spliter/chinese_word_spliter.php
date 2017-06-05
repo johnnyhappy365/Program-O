@@ -1,13 +1,26 @@
 <?php
 
-include(__DIR__ . "/../aip_nlp/Nlp.php");
+spl_autoload_register(function ($class) {
+    if ($class) {
+        $file = str_replace('\\', '/', $class);
+        $file .= '.php';
+        if (strpos($file, 'app/library/thirds') === 0) {
+            $file = __DIR__ . "/../../../../" . str_replace('app/library/thirds/', '', $file);
+
+        }
+        if (file_exists($file)) {
+            include $file;
+        }
+    }
+});
+
+use app\library\thirds\aip_nlp\Nlp;
+
 
 function splitChineseWord($text)
 {
-    $result = implode(' ', (explode("\t", trim(wordseq($text)["scw_out"]["wordsepbuf"]))));
-//    var_dump($result);
+    $result = implode(' ', Nlp::wordseq($text));
     return $result;
-//    return implode(' ', ch2arr($text));
 }
 
 function ch2arr($str)
