@@ -15,6 +15,7 @@ include("word_censor/word_censor.php");
 include('spell_checker/spell_checker.php');
 include("parseBBCode/parseBBCode.php"); // A new addon to allow parsing of output that's consistent with BBCode tags
 //include("checkForBan/checkForBan.php"); // A new addon for verifying that a user has not been banned by IP address
+include("chinese_word_spliter/chinese_word_spliter.php");
 
 runDebug(__FILE__, __FUNCTION__, __LINE__, "Loading addons", 4);
 
@@ -29,6 +30,7 @@ function run_pre_input_addons(&$convoArr, $say)
 {
     global $format;
 
+    $say = splitChineseWord($say);
     $say = (USE_SPELL_CHECKER) ? run_spell_checker_say($say) : $say;
     //$convoArr = checkIP($convoArr);
     #if ($format == 'html') $say =  parseInput($say);
