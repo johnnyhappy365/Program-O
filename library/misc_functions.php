@@ -130,7 +130,8 @@ function normalize_text($text, $convert_case = true)
         '/(\d+)\s*\*\s*(\d+)/',
         '/(\d+)\s*x\s*(\d+)/',
         '/(\d+)\s*\/\s*(\d+)/',
-        '/[[:punct:]]/uis',
+//        '/[[:punct:]]/uis',
+        '/[!"#$%&\'()*+,-.\/\;<=>?@[\]^_`{|}]~/uis',
         '/\s\s+/',
     );
     $repl = array(
