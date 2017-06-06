@@ -159,6 +159,11 @@ function unset_all_bad_pattern_matches($convoArr, $allrows, $lookingfor)
 
     $default_pattern = $convoArr['conversation']['default_aiml_pattern'];
     $default_pattern_lc = _strtolower($default_pattern);
+
+    runDebug(__FILE__, __FUNCTION__, __LINE__, '$lookingfor:' . $lookingfor, 4);
+    runDebug(__FILE__, __FUNCTION__, __LINE__, '$default_pattern_lc:' . $default_pattern_lc, 4);
+
+
     $tmp_rows = array();
     $relevantRows = array();
     //if default pattern keep
@@ -240,6 +245,11 @@ function unset_all_bad_pattern_matches($convoArr, $allrows, $lookingfor)
                 $aiml_thatpatternmatch = false;
         }
 
+        runDebug(__FILE__, __FUNCTION__, __LINE__, '$aiml_pattern:' . $aiml_pattern, 4);
+        runDebug(__FILE__, __FUNCTION__, __LINE__, '$default_pattern_lc:' . $default_pattern_lc, 4);
+
+
+
         if ($aiml_pattern == $default_pattern_lc)
         {
             //if it is a direct match with our default pattern then add to tmp_rows
@@ -264,6 +274,10 @@ function unset_all_bad_pattern_matches($convoArr, $allrows, $lookingfor)
         elseif ($aiml_pattern == $lookingfor_lc) {
             $tmp_rows[$i]['score'] = 1;
             $tmp_rows[$i]['track_score'] = " direct pattern match";
+        }
+        else if (is_similar_text($aiml_pattern, $lookingfor_lc)) {
+            $tmp_rows[$i]['score'] = 1;
+            $tmp_rows[$i]['track_score'] = " similar pattern match";
         }
         else {
             $tmp_rows[$i]['score'] = -1;
@@ -417,6 +431,10 @@ function score_matches($convoArr, $allrows, $pattern)
         // Start scoring here
         $current_score = 0;
         $track_matches = '';
+
+        runDebug(__FILE__, __FUNCTION__, __LINE__, '$category_bot_id:' . $category_bot_id, 1);
+        runDebug(__FILE__, __FUNCTION__, __LINE__, '$bot_id:' . $bot_id, 1);
+        runDebug(__FILE__, __FUNCTION__, __LINE__, '$bot_parent_id:' . $bot_parent_id, 1);
 
         # 1.) Check for current bot, rather than parent
         if ($category_bot_id == $bot_id)
@@ -1119,6 +1137,7 @@ function find_aiml_matches($convoArr)
             $row['score'] = 0;
             $row['aiml_id'] = $row['id'];
             $row['track_score'] = '';
+            runDebug(__FILE__, __FUNCTION__, __LINE__, '$row[bot_id]:' . $row['bot_id'], 2);
             $allrows[] = $row;
             $mu = memory_get_usage(true);
 
@@ -1185,6 +1204,15 @@ function get_bot_predicate($input)
     return $out;
 }
 
+function is_similar_text($one, $other)
+{
+    $one = str_replace(' ', '', $one);
+    $other = str_replace(' ', '', $other);
+    $result = levenshtein($one, $other);
+    runDebug(__FILE__, __FUNCTION__, __LINE__, "similar compare: $one vs $other is " . $result, 3);
+    $threshold = 5;
+    return $result <= $threshold;
+}
 
 
 
