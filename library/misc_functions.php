@@ -133,7 +133,6 @@ function normalize_text($text, $convert_case = true)
 //        '/[[:punct:]]/uis',
         '/[!"#$%&\'()*+,-.\/\;<=>?@[\]^_`{|}]~/uis',
         '/\s\s+/',
-        '/[哈|啊|嘛|呢|啦]/',
     );
     $repl = array(
         '$1 MINUS $2',
@@ -143,11 +142,10 @@ function normalize_text($text, $convert_case = true)
         '$1 DIVIDEDBY $2',
         ' ',
         ' ',
-        '',
     );
 
     $normalized_text = preg_replace($srch, $repl, $text);
-    $normalized_text = ($convert_case) ? _strtoupper($normalized_text) : $normalized_text;
+//    $normalized_text = ($convert_case) ? _strtoupper($normalized_text) : $normalized_text;
     $normalized_text = trim($normalized_text);
 
     runDebug(__FILE__, __FUNCTION__, __LINE__, "Normalization complete. Text = '$normalized_text'", 4);
