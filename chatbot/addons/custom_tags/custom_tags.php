@@ -50,7 +50,7 @@ function parse_php_tag($convoArr, $element, $parentName, $level)
 
     $response_string = implode_recursive(' ', $response);
     // do something here
-    return $response_string;
+    return eval($response_string);
 }
 
 /*
