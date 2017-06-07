@@ -1204,14 +1204,39 @@ function get_bot_predicate($input)
     return $out;
 }
 
+spl_autoload_register(function ($class) {
+    if ($class) {
+        $file = str_replace('\\', '/', $class);
+        $file .= '.php';
+        if (strpos($file, 'app/library/thirds') === 0) {
+            $file = __DIR__ . "/../../../../" . str_replace('app/library/thirds/', '', $file);
+
+        }
+        if (file_exists($file)) {
+            include $file;
+        }
+    }
+});
+
+use app\library\thirds\aip_nlp\Nlp;
+
 function is_similar_text($one, $other)
 {
     $one = str_replace(' ', '', $one);
     $other = str_replace(' ', '', $other);
-    $result = levenshtein($one, $other);
-    runDebug(__FILE__, __FUNCTION__, __LINE__, "similar compare: $one vs $other is " . $result, 3);
-    $threshold = 5;
-    return $result <= $threshold;
+
+//    采用编辑距离的方法,有时会不准
+//    $result = levenshtein($one, $other);
+//    runDebug(__FILE__, __FUNCTION__, __LINE__, "similar compare: $one vs $other is " . $result, 3);
+//    $threshold = 5;
+//    return $result <= $threshold;
+
+
+
+    $threshold = 0.75;
+    $score = Nlp::simnet($one, $other);
+    runDebug(__FILE__, __FUNCTION__, __LINE__, "similar compare: $one vs $other is " . $score, 3);
+    return $score >= $threshold;
 }
 
 
