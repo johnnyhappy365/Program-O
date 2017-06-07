@@ -110,15 +110,15 @@ function add_text_tags($input)
     $textTagReplace = array_values($textTagsToRemove);
 
     // Remove CRLF
-    $template = str_replace("\r\n", '', $template);
+//    $template = str_replace("\r\n", '', $template);
     // Remove newline
-    $template = str_replace("\n", '', $template);
+//    $template = str_replace("\n", '', $template);
+
     // Throw <text> tags around everything that lies between existing tags
     $template = preg_replace('~>(.*?)<~', "><text>$1</text><", $template);
     // Remove any "extra" <text> tags that may have been generated
     $template = str_replace($textTagSearch, $textTagReplace, $template);
     runDebug(__FILE__, __FUNCTION__, __LINE__, "Returning template:\n$template", 4);
-
     return $template;
 }
 
@@ -262,6 +262,8 @@ function parseTemplateRecursive(&$convoArr, SimpleXMLElement $element, $level = 
             runDebug(__FILE__, __FUNCTION__, __LINE__, "Adding '$tmpResponse' to the response array. tag name is $parentName.", 4);
             $response[] = $tmpResponse;
         }
+    } else {
+        $response[] = $tmpResponse;
     }
 
     return $response;
