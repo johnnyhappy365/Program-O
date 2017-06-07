@@ -1210,15 +1210,18 @@ spl_autoload_register(function ($class) {
         $file .= '.php';
         if (strpos($file, 'app/library/thirds') === 0) {
             $file = __DIR__ . "/../../../../" . str_replace('app/library/thirds/', '', $file);
-
+        } else if (strpos($file, 'app') === 0) {
+            $file = __DIR__ . "/../../../../../../" . str_replace('app/', '', $file);
         }
+
         if (file_exists($file)) {
             include $file;
         }
     }
 });
 
-use app\library\thirds\aip_nlp\Nlp;
+
+use app\library\tools\Tools;
 
 function is_similar_text($one, $other)
 {
@@ -1231,12 +1234,11 @@ function is_similar_text($one, $other)
 //    $threshold = 5;
 //    return $result <= $threshold;
 
+    $url = NIRVANA_URL . "/brain/brain/similar-text?one=$one&other=$other";
+    $result = Tools::sendHttpRequest($url);
 
-
-    $threshold = 0.75;
-    $score = Nlp::simnet($one, $other);
-    runDebug(__FILE__, __FUNCTION__, __LINE__, "similar compare: $one vs $other is " . $score, 3);
-    return $score >= $threshold;
+    runDebug(__FILE__, __FUNCTION__, __LINE__, "similar compare: $one vs $other is " . $result['data']['score'], 3);
+    return $result['data']['result'];
 }
 
 
