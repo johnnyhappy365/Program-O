@@ -1137,7 +1137,6 @@ function find_aiml_matches($convoArr)
             $row['score'] = 0;
             $row['aiml_id'] = $row['id'];
             $row['track_score'] = '';
-            runDebug(__FILE__, __FUNCTION__, __LINE__, '$row[bot_id]:' . $row['bot_id'], 2);
             $allrows[] = $row;
             $mu = memory_get_usage(true);
 
