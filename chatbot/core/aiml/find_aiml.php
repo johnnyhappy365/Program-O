@@ -1235,13 +1235,34 @@ function is_similar_text($one, $other)
 //    return $result <= $threshold;
 
     $url = NIRVANA_URL . "/brain/brain/similar-text?one=$one&other=$other";
-    $result = Tools::sendHttpRequest($url);
+    $result = sendHttpRequest($url);
 
-    runDebug(__FILE__, __FUNCTION__, __LINE__, "similar compare: $one vs $other is " . $result['data']['score'], 3);
-    return $result['data']['result'];
+    runDebug(__FILE__, __FUNCTION__, __LINE__, "similar compare: $one vs $other is " . $result->data->score, 3);
+    return $result->data->result;
 }
 
+function sendHttpRequest($url, $method = 'get', $postData = [])
+{
+    $ch = curl_init();
 
+    curl_setopt ( $ch , CURLOPT_URL , $url) ;
+    //curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/x-www-form-urlencoded'] );
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_TIMEOUT,30);
+
+    $method = strtoupper($method);
+
+    if ( $method == 'POST' || $method == 'PUT' ) {
+        //curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt ( $ch , CURLOPT_POSTFIELDS , http_build_query($postData) );
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, ["X-HTTP-Method-Override: $method", "Expect:"] );
+    }
+
+    $result = json_decode(curl_exec ( $ch ));
+
+    return $result;
+}
 
 
 
